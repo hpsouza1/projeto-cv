@@ -1,27 +1,20 @@
-// src/router/index.js
 import Vue from 'vue';
-import VueRouter from 'vue-router';
-import HomeView from '@/views/HomeView.vue';
-import RepositoryDetailsView from '@/views/RepositoryDetailsView.vue';
+import Router from 'vue-router';
+import FormView from '../views/FormView.vue';
 
-Vue.use(VueRouter);
+Vue.use(Router);
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView,
-  },
-  {
-    path: '/repository/:id',
-    name: 'repositoryDetails',
-    component: RepositoryDetailsView,
-  },
+    name: 'Form',
+    component: FormView
+  }
 ];
 
-const router = new VueRouter({
+const router = new Router({
   mode: 'history',
-  routes,
+  routes
 });
 
 export default router;
