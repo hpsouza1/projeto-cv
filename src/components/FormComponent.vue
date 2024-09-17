@@ -8,9 +8,8 @@
 
       <div class="centralizador">
         <div class="objetoCentralizador">
-          
           <!-- Nome -->
-          <div class="form-group">
+          <div :class="['form-group', { error: errors.nome }]">
             <label for="nome">Nome</label>
             <input
               type="text"
@@ -18,10 +17,11 @@
               placeholder="Insira seu nome aqui"
               required
             />
+            <label v-if="errors.nome">{{ errors.nome }}</label>
           </div>
 
           <!-- Telefone -->
-          <div class="form-group">
+          <div :class="['form-group', { error: errors.telefone }]">
             <label for="telefone">Telefone</label>
             <input
               type="text"
@@ -29,10 +29,11 @@
               placeholder="(XX) XXXX-XXXX"
               required
             />
+            <label v-if="errors.telefone">{{ errors.telefone }}</label>
           </div>
 
           <!-- E-mail -->
-          <div class="form-group">
+          <div :class="['form-group', { error: errors.email }]">
             <label for="email">E-mail</label>
             <input
               type="email"
@@ -40,16 +41,18 @@
               placeholder="Insira seu e-mail"
               required
             />
+            <label v-if="errors.email">{{ errors.email }}</label>
           </div>
 
           <!-- LinkedIn -->
-          <div class="form-group">
+          <div :class="['form-group', { error: errors.linkedin }]">
             <label for="linkedin">LinkedIn</label>
             <input
               type="url"
               v-model="formData.linkedin"
               placeholder="https://www.linkedin.com/in/seuperfil"
             />
+            <label v-if="errors.linkedin">{{ errors.linkedin }}</label>
           </div>
 
           <!-- Profissão -->
@@ -63,7 +66,7 @@
           </div>
 
           <!-- CEP -->
-          <div class="form-group">
+          <div :class="['form-group', { error: errors.cep }]">
             <label for="cep">CEP</label>
             <input
               type="text"
@@ -71,6 +74,7 @@
               placeholder="Insira seu CEP aqui"
               @blur="fetchAddress"
             />
+            <label v-if="errors.cep">{{ errors.cep }}</label>
             <span v-if="loading">Carregando...</span>
           </div>
 
@@ -200,43 +204,93 @@
             <label>Skills</label>
             <div>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="HTML" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="HTML"
+                />
                 HTML
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="CSS" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="CSS"
+                />
                 CSS
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="JavaScript" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="JavaScript"
+                />
                 JavaScript
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="React" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="React"
+                />
                 React
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="Vue.js" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="Vue.js"
+                />
                 Vue.js
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="Node.js" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="Node.js"
+                />
                 Node.js
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="TypeScript" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="TypeScript"
+                />
                 TypeScript
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="GraphQL" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="GraphQL"
+                />
                 GraphQL
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="Python" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="Python"
+                />
                 Python
               </label>
               <label>
-                <input class="classcheckbox" type="checkbox" v-model="formData.skills" value="Django" />
+                <input
+                  class="classcheckbox"
+                  type="checkbox"
+                  v-model="formData.skills"
+                  value="Django"
+                />
                 Django
               </label>
             </div>
@@ -265,7 +319,11 @@
           <div class="form-group">
             <label for="foto">Upload da Foto</label>
             <input type="file" @change="handleFileUpload" />
-            <img v-if="formData.foto" :src="formData.foto" alt="Preview da foto" />
+            <img
+              v-if="formData.foto"
+              :src="formData.foto"
+              alt="Preview da foto"
+            />
           </div>
 
           <!-- Botões -->
@@ -307,6 +365,13 @@ export default {
         foto: null,
       },
       loading: false,
+      errors: {
+        nome: null,
+        telefone: null,
+        email: null,
+        linkedin: null,
+        cep: null,
+      },
     };
   },
   methods: {
@@ -330,8 +395,61 @@ export default {
       };
       reader.readAsDataURL(file);
     },
+    validateForm() {
+      this.errors = {
+        nome: null,
+        telefone: null,
+        email: null,
+        linkedin: null,
+        cep: null,
+      };
+
+      let isValid = true;
+
+      // Validação do nome
+      if (!this.formData.nome) {
+        this.errors.nome = "O nome é obrigatório.";
+        isValid = false;
+      }
+
+      // Validação do telefone
+      const onlyNumbers = this.formData.telefone.replace(/\D/g, ""); // Remove tudo que não for número
+      if (onlyNumbers.length < 10 || onlyNumbers.length > 11) {
+        this.errors.telefone = "O telefone deve ter 10 ou 11 dígitos.";
+        isValid = false;
+      } else if (/\D/.test(this.formData.telefone)) {
+        this.errors.telefone = "O telefone deve conter apenas números.";
+        isValid = false;
+      }
+
+      // Validação do e-mail
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!this.formData.email.match(emailPattern)) {
+        this.errors.email = "Formato de e-mail inválido.";
+        isValid = false;
+      }
+
+      // Validação do CEP
+      const cepPattern = /^\d{5}-?\d{3}$/;
+      if (!this.formData.cep.match(cepPattern)) {
+        this.errors.cep = "CEP inválido. Deve ter 8 dígitos.";
+        isValid = false;
+      }
+
+      return isValid;
+    },
     submitForm() {
-      console.log(this.formData);
+      if (this.validateForm()) {
+        console.log("Formulário validado com sucesso!", this.formData);
+        this.$router.push({
+          name: "Resume",
+          params: { formData: this.formData },
+        });
+        // Salvar o formulário no localStorage
+        localStorage.setItem("formData", JSON.stringify(this.formData));
+      } else {
+        console.error("Formulário inválido.");
+      }
     },
   },
 };
@@ -348,6 +466,20 @@ export default {
   max-width: 600px;
   margin: 0 auto;
   margin-top: 20px;
+}
+
+.form-group.error input,
+.form-group.error select,
+.form-group.error textarea {
+  border-color: red;
+}
+
+.form-group span {
+  color: red;
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  font-size: 0.9rem;
 }
 
 button {
@@ -415,4 +547,3 @@ img {
   margin-top: 10px;
 }
 </style>
-
